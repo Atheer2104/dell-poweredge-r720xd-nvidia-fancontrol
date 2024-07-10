@@ -1,14 +1,19 @@
 import subprocess
 import shlex
+import asyncio
 
-def get_max_gpu_temperature():
+
+async def get_max_gpu_temperature():
 	command = "nvidia-smi --query-gpu=temperature.gpu --format=csv,noheader"
-	result = subprocess.run(shlex.split(command), capture_output=True, text=True)
+	# result = subprocess.run(shlex.split(command), capture_output=True, text=True)
+	proc = await asyncio.create_subprocess_shell(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-	if result.stderr:
-		print(f"An error has occured when retriving gpu temperature data with the following \n {result.stderr}")
+	stdout, stderr = await proc.communicate()
+	stdout, stderr = stdout.decode("utf-8"), stderr.decode("utf-8")
+
+	if stderr:
+		print(f"An error has occured when retriving gpu temperature data with the following \n {stderr}")
 	else:
-		output = result.stdout
-		temps = [int(temp) for temp in output.split("\n") if temp.strip()]
+		temps = [int(temp) for temp in stdout.split("\n") if temp.strip()]
 		# print(temps)
 		return max(temps)
