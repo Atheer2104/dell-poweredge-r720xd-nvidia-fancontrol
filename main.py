@@ -1,40 +1,47 @@
 import asyncio
+from loguru import logger
 
-from fanspeed_quantities import fanspeed_quantities
-from ipmi_command import set_fan_speed
-from nvidia_temprature_reader import get_max_gpu_temperature
+from lib.fanspeed_quantities import FanspeedQuantities
+from lib.ipmi_command import set_fan_speed
+from lib.nvidia_temprature_reader import get_max_gpu_temperature
+from lib.logger import initalize_logger
 
-
-SLEEP_DURATION = 1
-
+SLEEP_DURATION = 5
 
 async def main():
+	initalize_logger()
+	
 	while True:
 		max_gpu_temp = await get_max_gpu_temperature()
 
 		if max_gpu_temp >= 75:
-			fanspeed_quantity = fanspeed_quantities.HUNDRED_PERCENT
+			fanspeed_quantity = FanspeedQuantities.HUNDRED_PERCENT
 			await set_fan_speed(fanspeed_quantity)
-			print(f"max gpu temp: {max_gpu_temp} - set fan speed to {fanspeed_quantity.value.name}")
+			logger.info(f"max gpu temp: {max_gpu_temp} - set fan speed to {fanspeed_quantity.value.name}")
 		elif max_gpu_temp >= 65:
-			fanspeed_quantity = fanspeed_quantities.NINTY_PERCENT
+			fanspeed_quantity = FanspeedQuantities.NINTY_PERCENT
 			await set_fan_speed(fanspeed_quantity)
-			print(f"max gpu temp: {max_gpu_temp} - set fan speed to {fanspeed_quantity.value.name}")
+			logger.info(f"max gpu temp: {max_gpu_temp} - set fan speed to {fanspeed_quantity.value.name}")
 		elif max_gpu_temp >= 60:
-			fanspeed_quantity = fanspeed_quantities.EIGHTY_PERCENT
+			fanspeed_quantity = FanspeedQuantities.EIGHTY_PERCENT
 			await set_fan_speed(fanspeed_quantity)
-			print(f"max gpu temp: {max_gpu_temp} - set fan speed to {fanspeed_quantity.value.name}")
+			logger.info(f"max gpu temp: {max_gpu_temp} - set fan speed to {fanspeed_quantity.value.name}")
 		elif max_gpu_temp >= 55:
-			fanspeed_quantity = fanspeed_quantities.SEVENTY_PERCENT
+			fanspeed_quantity = FanspeedQuantities.SEVENTY_PERCENT
 			await set_fan_speed(fanspeed_quantity)
-			print(f"max gpu temp: {max_gpu_temp} - set fan speed to {fanspeed_quantity.value.name}")
+			logger.info(f"max gpu temp: {max_gpu_temp} - set fan speed to {fanspeed_quantity.value.name}")
 		elif max_gpu_temp >= 50:
-			fanspeed_quantity = fanspeed_quantities.SIXTY_PERCENT
+			fanspeed_quantity = FanspeedQuantities.SIXTY_PERCENT
 			await set_fan_speed(fanspeed_quantity)
-			print(f"max gpu temp: {max_gpu_temp} - set fan speed to {fanspeed_quantity.value.name}")
+			logger.info(f"max gpu temp: {max_gpu_temp} - set fan speed to {fanspeed_quantity.value.name}")
+		elif max_gpu_temp >= 45:
+			fanspeed_quantity = FanspeedQuantities.FOURTY_PERCENT
+			await set_fan_speed(fanspeed_quantity)
+			logger.info(f"max gpu temp: {max_gpu_temp} - set fan speed to {fanspeed_quantity.value.name}")
 		else:
-			await set_fan_speed(fanspeed_quantities.AUTO)
-			print(f"max gpu temp: {max_gpu_temp} - set fan speed to {fanspeed_quantities.AUTO.value.name}")
+			fanspeed_quantity = FanspeedQuantities.AUTO
+			await set_fan_speed(fanspeed_quantity)
+			logger.info(f"max gpu temp: {max_gpu_temp} - set fan speed to {fanspeed_quantity.value.name}")
 
 		await asyncio.sleep(SLEEP_DURATION)
 

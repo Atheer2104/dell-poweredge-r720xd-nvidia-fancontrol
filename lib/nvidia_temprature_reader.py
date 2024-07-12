@@ -1,7 +1,7 @@
 import subprocess
-import shlex
 import asyncio
 
+from loguru import logger
 
 async def get_max_gpu_temperature():
 	command = "nvidia-smi --query-gpu=temperature.gpu --format=csv,noheader"
@@ -12,8 +12,7 @@ async def get_max_gpu_temperature():
 	stdout, stderr = stdout.decode("utf-8"), stderr.decode("utf-8")
 
 	if stderr:
-		print(f"An error has occured when retriving gpu temperature data with the following \n {stderr}")
+		logger.error(f"An error has occured when retriving gpu temperature data with the following \n {stderr}")
 	else:
 		temps = [int(temp) for temp in stdout.split("\n") if temp.strip()]
-		# print(temps)
 		return max(temps)
