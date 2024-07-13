@@ -6,7 +6,7 @@ from lib.ipmi_command import set_fan_speed
 from lib.nvidia_temprature_reader import get_max_gpu_temperature
 from lib.logger import initalize_logger
 
-SLEEP_DURATION = 5
+SLEEP_DURATION = 3
 
 async def main():
 	initalize_logger()
@@ -35,7 +35,7 @@ async def main():
 			await set_fan_speed(fanspeed_quantity)
 			logger.info(f"max gpu temp: {max_gpu_temp} - set fan speed to {fanspeed_quantity.value.name}")
 		elif max_gpu_temp >= 45:
-			fanspeed_quantity = FanspeedQuantities.FOURTY_PERCENT
+			fanspeed_quantity = FanspeedQuantities.FIVTY_PERCENT
 			await set_fan_speed(fanspeed_quantity)
 			logger.info(f"max gpu temp: {max_gpu_temp} - set fan speed to {fanspeed_quantity.value.name}")
 		else:
